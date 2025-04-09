@@ -1,21 +1,19 @@
 import streamlit as st
 import pickle
 import requests
-import zipfile
-import os
 
-# Function to unzip the cosine_sim.pkl.zip file
-def unzip_model():
-    with zipfile.ZipFile("cosine_sim.pkl.zip", 'r') as zip_ref:
-        zip_ref.extractall()
+# Dropbox shared link
+dropbox_link = 'https://www.dropbox.com/scl/fi/aun6ellbthtk06bsvu1q8/cosine_sim.pkl?rlkey=4lyuniz50mg267z1mj9m2x1nd&dl=0'  # `dl=1` forces the file to download
 
-# Load and apply custom CSS
-with open("style.css") as f:
-    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+# Function to download the file from Dropbox
+def download_file(url, filename):
+    response = requests.get(url)
+    with open(filename, 'wb') as file:
+        file.write(response.content)
+    print(f"File downloaded: {filename}")
 
-# Unzip the model files if they are not already unzipped
-if not os.path.exists("cosine_sim.pkl"):
-    unzip_model()
+# Download cosine_sim.pkl file from Dropbox
+download_file(dropbox_link, 'cosine_sim.pkl')
 
 # Load models and data
 try:
