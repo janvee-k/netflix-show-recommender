@@ -66,7 +66,7 @@ Ensure you have the following installed:
   ```bash
   .\venv\Scripts\activate
   ```
--For macOS/Linux:
+- For macOS/Linux:
   ```bash
   source venv/bin/activate
   ```
@@ -85,7 +85,8 @@ Your app will be available at http://localhost:8501 in your browser.
 
 ## File Structure
 The repository structure is as follows:
-  /netflix-show-recommender
+
+netflix-show-recommender/
 │
 ├── app.py               # Main Streamlit app
 ├── requirements.txt     # List of Python dependencies
