@@ -82,19 +82,12 @@ Ensure you have the following installed:
   ```
 Your app will be available at http://localhost:8501 in your browser.
 
-
 ## File Structure
+
 The repository structure is as follows:
 
-netflix-show-recommender/
-│
-├── app.py               # Main Streamlit app
-├── requirements.txt     # List of Python dependencies
-├── style.css            # Custom CSS for styling the app
-├── cosine_sim.pkl       # Cosine similarity model
-├── df.pkl               # DataFrame containing Netflix shows
-├── indices.pkl          # Indices for the shows in the DataFrame
-└── README.md            # Project description and instructions
+netflix-show-recommender/ │ ├── app.py # Main Streamlit app ├── requirements.txt # List of Python dependencies ├── style.css # Custom CSS for styling the app ├── cosine_sim.pkl # Cosine similarity model ├── df.pkl # DataFrame containing Netflix shows ├── indices.pkl # Indices for the shows in the DataFrame └── README.md # Project description and instructions
+
 
 ## License
 This project is licensed under the MIT License - see the LICENSE file for details.
