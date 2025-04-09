@@ -1,11 +1,21 @@
 import streamlit as st
 import pickle
 import requests
-import html
+import zipfile
+import os
+
+# Function to unzip the cosine_sim.pkl.zip file
+def unzip_model():
+    with zipfile.ZipFile("cosine_sim.pkl.zip", 'r') as zip_ref:
+        zip_ref.extractall()
 
 # Load and apply custom CSS
 with open("style.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+# Unzip the model files if they are not already unzipped
+if not os.path.exists("cosine_sim.pkl"):
+    unzip_model()
 
 # Load models and data
 try:
@@ -38,19 +48,10 @@ def fetch_poster(title):
     data = response.json()
     return data.get('Poster', 'https://via.placeholder.com/150')
 
-# Clean title function to handle special characters
-def clean_title(title):
-    # Remove any '#' characters that might be in the title
-    return title.replace('#', '').strip()
-
 # Streamlit UI
 st.title("🎬 Netflix Show Recommender")
 
-# Get sorted list of unique titles and clean them
-clean_titles = [clean_title(title) for title in df['title'].unique()]
-sorted_titles = sorted(clean_titles)
-
-selected_title = st.selectbox("Choose a show:", sorted_titles)
+selected_title = st.selectbox("Choose a show:", sorted(df['title'].unique()))
 
 if st.button("Get Recommendations"):
     with st.spinner("Fetching recommendations..."):
@@ -59,19 +60,14 @@ if st.button("Get Recommendations"):
     if recommendations:
         st.subheader("Recommended Shows:")
         
-        # Create rows of 5 cards each
-        # Process recommendations in chunks of 5
-        for i in range(0, len(recommendations), 5):
-            # Create a row with 5 columns
-            cols = st.columns(5)
-            
-            # Fill each column with a card
-            for col_idx, show_idx in enumerate(range(i, min(i+5, len(recommendations)))):
-                show = recommendations[show_idx]
-                clean_show = clean_title(show)
-                poster = fetch_poster(clean_show)
-                
-                with cols[col_idx]:
-                    st.image(poster, width=150)
-                    st.markdown(f"<div class='card-title'>{clean_show}</div>", unsafe_allow_html=True)
+        # Display recommendations in a grid of cards (5 per row)
+        num_columns = 5
+        cols = st.columns(num_columns)  # Create 5 columns
 
+        # Iterate over recommendations and display them in the grid
+        for i, show in enumerate(recommendations):
+            poster = fetch_poster(show)
+            col = cols[i % num_columns]  # Distribute the shows across columns
+            with col:
+                st.image(poster, width=150)
+                st.write(show)
