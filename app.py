@@ -95,5 +95,10 @@ if st.button("Get Recommendations"):
                 poster = fetch_poster(clean_show)
                 
                 with cols[col_idx]:
-                    st.image(poster, width=150)
-                    st.markdown(f"<div class='card-title'>{clean_show}</div>", unsafe_allow_html=True)
+                    # Use HTML div to force center alignment
+                    st.markdown(f"""
+                        <div style="text-align: center; display: flex; flex-direction: column; align-items: center;">
+                            <img src="{poster}" style="width: 150px; height: 225px; object-fit: cover; border: 2px solid white; border-radius: 10px; margin-bottom: 10px;">
+                            <p style="color: white; font-weight: 600; font-size: 14px; text-align: center; margin: 0; padding: 0 5px; line-height: 1.3;">{clean_show}</p>
+                        </div>
+                    """, unsafe_allow_html=True)
