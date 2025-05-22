@@ -1,19 +1,34 @@
 import streamlit as st
 import pickle
 import requests
+import html
+import os
 
-# Dropbox shared link
-dropbox_link = 'https://www.dropbox.com/scl/fi/aun6ellbthtk06bsvu1q8/cosine_sim.pkl?rlkey=4lyuniz50mg267z1mj9m2x1nd&dl=0'  # `dl=1` forces the file to download
+# Load and apply custom CSS
+with open("style.css") as f:
+    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
-# Function to download the file from Dropbox
-def download_file(url, filename):
-    response = requests.get(url)
-    with open(filename, 'wb') as file:
-        file.write(response.content)
-    print(f"File downloaded: {filename}")
+# Function to download cosine_sim.pkl from Dropbox
+def download_cosine_sim():
+    if not os.path.exists('cosine_sim.pkl'):
+        st.info("Downloading similarity model... This may take a moment.")
+        try:
+            # Your Dropbox link with dl=1 for direct download
+            url = "https://www.dropbox.com/scl/fi/aun6ellbthtk06bsvu1q8/cosine_sim.pkl?rlkey=4lyuniz50mg267z1mj9m2x1nd&dl=1"
+            
+            response = requests.get(url)
+            response.raise_for_status()  # Raises an HTTPError for bad responses
+            
+            with open('cosine_sim.pkl', 'wb') as f:
+                f.write(response.content)
+            
+            st.success("Model downloaded successfully!")
+        except Exception as e:
+            st.error(f"Error downloading cosine_sim.pkl: {e}")
+            st.stop()
 
-# Download cosine_sim.pkl file from Dropbox
-download_file(dropbox_link, 'cosine_sim.pkl')
+# Download the model if it doesn't exist
+download_cosine_sim()
 
 # Load models and data
 try:
@@ -46,10 +61,19 @@ def fetch_poster(title):
     data = response.json()
     return data.get('Poster', 'https://via.placeholder.com/150')
 
+# Clean title function to handle special characters
+def clean_title(title):
+    # Remove any '#' characters that might be in the title
+    return title.replace('#', '').strip()
+
 # Streamlit UI
 st.title("🎬 Netflix Show Recommender")
 
-selected_title = st.selectbox("Choose a show:", sorted(df['title'].unique()))
+# Get sorted list of unique titles and clean them
+clean_titles = [clean_title(title) for title in df['title'].unique()]
+sorted_titles = sorted(clean_titles)
+
+selected_title = st.selectbox("Choose a show:", sorted_titles)
 
 if st.button("Get Recommendations"):
     with st.spinner("Fetching recommendations..."):
@@ -58,14 +82,18 @@ if st.button("Get Recommendations"):
     if recommendations:
         st.subheader("Recommended Shows:")
         
-        # Display recommendations in a grid of cards (5 per row)
-        num_columns = 5
-        cols = st.columns(num_columns)  # Create 5 columns
-
-        # Iterate over recommendations and display them in the grid
-        for i, show in enumerate(recommendations):
-            poster = fetch_poster(show)
-            col = cols[i % num_columns]  # Distribute the shows across columns
-            with col:
-                st.image(poster, width=150)
-                st.write(show)
+        # Create rows of 5 cards each
+        # Process recommendations in chunks of 5
+        for i in range(0, len(recommendations), 5):
+            # Create a row with 5 columns
+            cols = st.columns(5)
+            
+            # Fill each column with a card
+            for col_idx, show_idx in enumerate(range(i, min(i+5, len(recommendations)))):
+                show = recommendations[show_idx]
+                clean_show = clean_title(show)
+                poster = fetch_poster(clean_show)
+                
+                with cols[col_idx]:
+                    st.image(poster, width=150)
+                    st.markdown(f"<div class='card-title'>{clean_show}</div>", unsafe_allow_html=True)
