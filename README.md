@@ -1,92 +1,79 @@
-Dataset used: https://www.kaggle.com/datasets/shivamb/netflix-shows/data
-
 # netflix-show-recommender
 
 This is a machine learning-powered web application built using Streamlit. The app recommends similar Netflix shows based on the user's input. It uses a cosine similarity model to suggest the most relevant recommendations, making it perfect for discovering new shows to watch. You can select a show from a dropdown menu, and the app will fetch and display a list of 10 similar shows along with their posters.
 
+Dataset used: https://www.kaggle.com/datasets/shivamb/netflix-shows/data
+
 
 ## How It Works
-1. **Choose a show**: From the dropdown menu, select any Netflix show you'd like to get recommendations for.
-2. **Click "Get Recommendations"**: Once you've selected your show, click the button to see a list of similar shows.
-3. **Explore Recommendations**: The app will display up to 10 shows that are similar to the one you picked, complete with posters and titles.
-4. **Cosine Similarity Model**: The model used to calculate recommendations (`cosine_sim.pkl`) is fetched from a Dropbox link to avoid file size restrictions on GitHub.
+
+1. **Choose a show**: Select a Netflix show from the dropdown menu.
+2. **Get Recommendations**: Click the button to view a list of similar shows.
+3. **View Results**: The app displays up to 10 shows similar to your selection, with posters and titles.
+4. **Recommendation Model**: The recommendations are based on cosine similarity and are fetched using a precomputed model hosted on Dropbox.
+
 ---
 
 ## Features
 
-- **Easy-to-Use Interface**: The app is designed to be simple and interactive. Just choose a show, and you're ready to go!
-- **Real-time Recommendations**: As soon as you click the button, you’ll get show recommendations based on your input.
-- **Show Posters**: Each recommendation comes with a poster, making it visually appealing and easy to browse.
+- **Interactive Interface**: Built with Streamlit for a fast and user-friendly experience.
+- **Visual Output**: Show posters are displayed alongside recommendations for an improved UI.
+- **Dynamic Model Loading**: The cosine similarity model is automatically downloaded from Dropbox if not available locally.
+- **Title Matching**: Automatically handles and cleans titles with special characters.
 
 ---
 
 ## Technologies Used
-- **Streamlit**: Used to build the interactive web application.
-- **Python**: The main programming language for the backend logic and recommendation system.
-- **Cosine Similarity**: A mathematical method to measure the similarity between shows based on their features.
-- **OMDb API**: To fetch posters of the shows for a better visual experience.
-- **Dropbox**: Used to store the large `cosine_sim.pkl` file remotely to avoid GitHub's file size limitations.
+
+- **Streamlit** – For building the web application.
+- **Python** – Core programming language used for logic and backend.
+- **Cosine Similarity** – For computing show similarity.
+- **OMDb API** – For fetching posters and metadata.
+- **Dropbox** – To host and serve the large precomputed cosine similarity model file.
 
 ---
-## Installation & Usage
 
-To run this project locally, follow the steps below:
+## Installation and Usage
 
-### Prerequisites
+Follow the steps below to run the project locally:
 
-Ensure you have the following installed:
+```bash```
+# 1. Clone the repository
+git clone https://github.com/janvee-k/netflix-show-recommender.git
 
-- Python 3.x
-- pip (Python package manager)
+# 2. Navigate to the project directory
+cd netflix-show-recommender
 
-### Installation Steps
+# 3. (Optional) Create and activate a virtual environment
+python -m venv venv
 
-1. Clone the repository:
+# On Windows:
+venv\Scripts\activate
 
-   ```bash
-   git clone https://github.com/janvee-k/netflix-show-recommender.git
-   ```
+# On macOS/Linux:
+source venv/bin/activate
 
-2. Navigate to the project folder:
+# 4. Install the dependencies
+pip install -r requirements.txt
 
-  ```bash
-  cd netflix-show-recommender
-  ```
+# 5. Run the Streamlit app
+streamlit run app.py
 
-3. Create a virtual environment (optional but recommended):
+# 6. The app will open in your browser at http://localhost:8501
 
-  ```bash
-    python -m venv venv
-```
+## Project Structure:
 
-4. Activate the virtual environment:
-
-- For Windows:
-
-  ```bash
-  .\venv\Scripts\activate
-  ```
-- For macOS/Linux:
-  ```bash
-  source venv/bin/activate
-  ```
-5. Install the required dependencies:
-
-  ```bash
-  pip install -r requirements.txt
-  ```
-6. Run the app:
-
-  ```bash
-  streamlit run app.py
-  ```
-Your app will be available at http://localhost:8501 in your browser.
-
-## File Structure
-
-The repository structure is as follows:
-
-netflix-show-recommender/ │ ├── app.py # Main Streamlit app ├── requirements.txt # List of Python dependencies ├── style.css # Custom CSS for styling the app ├── cosine_sim.pkl # Cosine similarity model ├── df.pkl # DataFrame containing Netflix shows ├── indices.pkl # Indices for the shows in the DataFrame └── README.md # Project description and instructions
+netflix-show-recommender/
+├── app.py                         # Main application code
+├── cosine_sim.pkl                # Cosine similarity matrix (downloaded if not present)
+├── df.pkl                        # DataFrame with show features
+├── indices.pkl                   # Index mapping for show titles
+├── netflix_titles.csv            # Original dataset from Kaggle
+├── requirements.txt              # Required Python packages
+├── style.css                     # Custom styles for Streamlit app
+├── netflix-recommender-preview.png  # App preview image
+├── LICENSE                       # License file
+└── README.md                     # Project documentation
 
 
 ## License
